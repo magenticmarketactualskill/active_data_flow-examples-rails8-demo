@@ -1,0 +1,253 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+  <div class="container mx-auto px-4 py-12">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-5xl font-bold text-gray-900 mb-4">ActiveDataflow Demo</h1>
+      <p class="text-xl text-gray-600">Rails 8 Product Catalog Synchronization Example</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+        <div class="text-4xl font-bold text-blue-600 mb-2"><%= @product_count %></div>
+        <div class="text-gray-600">Total Products</div>
+        <div class="text-sm text-gray-500 mt-1">(<%= @active_product_count %> active)</div>
+      </div>
+      <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+        <div class="text-4xl font-bold text-green-600 mb-2"><%= @export_count %></div>
+        <div class="text-gray-600">Exported Products</div>
+        <div class="text-sm text-gray-500 mt-1">Transformed records</div>
+      </div>
+      <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+        <div class="text-4xl font-bold text-purple-600 mb-2">1</div>
+        <div class="text-gray-600">Active DataFlow</div>
+        <div class="text-sm text-gray-500 mt-1">ProductSyncFlow</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <!-- Products Section -->
+      <div class="bg-white rounded-lg shadow-lg p-8">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-900">Products</h2>
+        </div>
+        <p class="text-gray-600 mb-4">
+          The source table containing your product catalog. Each product has:
+        </p>
+        <ul class="space-y-2 mb-6">
+          <li class="flex items-start">
+            <span class="text-blue-600 mr-2">•</span>
+            <span class="text-gray-700"><strong>Name & SKU:</strong> Product identification</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-blue-600 mr-2">•</span>
+            <span class="text-gray-700"><strong>Price:</strong> Stored as decimal (e.g., $29.99)</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-blue-600 mr-2">•</span>
+            <span class="text-gray-700"><strong>Category:</strong> Product classification</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-blue-600 mr-2">•</span>
+            <span class="text-gray-700"><strong>Active Flag:</strong> Only active products are synced</span>
+          </li>
+        </ul>
+        <%= link_to "View Products →", products_path, class: "inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition" %>
+      </div>
+
+      <!-- Product Exports Section -->
+      <div class="bg-white rounded-lg shadow-lg p-8">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-900">Product Exports</h2>
+        </div>
+        <p class="text-gray-600 mb-4">
+          The destination table with transformed product data for external systems:
+        </p>
+        <ul class="space-y-2 mb-6">
+          <li class="flex items-start">
+            <span class="text-green-600 mr-2">•</span>
+            <span class="text-gray-700"><strong>Product ID:</strong> Reference to source product</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-green-600 mr-2">•</span>
+            <span class="text-gray-700"><strong>Price in Cents:</strong> Converted from decimal (2999)</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-green-600 mr-2">•</span>
+            <span class="text-gray-700"><strong>Category Slug:</strong> URL-friendly format</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-green-600 mr-2">•</span>
+            <span class="text-gray-700"><strong>Export Timestamp:</strong> When sync occurred</span>
+          </li>
+        </ul>
+        <%= link_to "View Exports →", product_exports_path, class: "inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition" %>
+      </div>
+    </div>
+
+    <!-- DataFlow Section -->
+    <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+          <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900">ProductSyncFlow DataFlow</h2>
+      </div>
+
+      <div class="mb-6">
+        <p class="text-gray-600 text-lg mb-4">
+          The ProductSyncFlow demonstrates ActiveDataflow's data transformation capabilities. 
+          It automatically syncs active products to the export table with the following transformations:
+        </p>
+      </div>
+
+      <!-- Flow Diagram -->
+      <div class="bg-gray-50 rounded-lg p-6 mb-6">
+        <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+          <!-- Source -->
+          <div class="flex-1 text-center">
+            <div class="bg-blue-500 text-white rounded-lg p-4 mb-2">
+              <div class="font-bold">Source</div>
+              <div class="text-sm">Products Table</div>
+            </div>
+            <div class="text-xs text-gray-600">Active products only</div>
+          </div>
+
+          <!-- Arrow -->
+          <div class="hidden md:block">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </div>
+
+          <!-- Transform -->
+          <div class="flex-1 text-center">
+            <div class="bg-purple-500 text-white rounded-lg p-4 mb-2">
+              <div class="font-bold">Transform</div>
+              <div class="text-sm">Data Processing</div>
+            </div>
+            <div class="text-xs text-gray-600">Price, category, timestamp</div>
+          </div>
+
+          <!-- Arrow -->
+          <div class="hidden md:block">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </div>
+
+          <!-- Sink -->
+          <div class="flex-1 text-center">
+            <div class="bg-green-500 text-white rounded-lg p-4 mb-2">
+              <div class="font-bold">Sink</div>
+              <div class="text-sm">Product Exports</div>
+            </div>
+            <div class="text-xs text-gray-600">Transformed records</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transformations -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="border-l-4 border-purple-500 pl-4">
+          <div class="font-semibold text-gray-900 mb-1">Price Conversion</div>
+          <div class="text-sm text-gray-600">$29.99 → 2999 cents</div>
+          <div class="text-xs text-gray-500 mt-1">Multiply by 100 for integer storage</div>
+        </div>
+        <div class="border-l-4 border-purple-500 pl-4">
+          <div class="font-semibold text-gray-900 mb-1">Category Slugification</div>
+          <div class="text-sm text-gray-600">"Home & Kitchen" → "home-kitchen"</div>
+          <div class="text-xs text-gray-500 mt-1">URL-friendly format</div>
+        </div>
+        <div class="border-l-4 border-purple-500 pl-4">
+          <div class="font-semibold text-gray-900 mb-1">Timestamp Addition</div>
+          <div class="text-sm text-gray-600">exported_at: <%= Time.current.strftime("%Y-%m-%d %H:%M") %></div>
+          <div class="text-xs text-gray-500 mt-1">Track when sync occurred</div>
+        </div>
+      </div>
+
+      <!-- Code Preview -->
+      <div class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto">
+        <pre class="text-sm"><code>class ProductSyncFlow < ActiveDataflow::DataFlow
+  def initialize(config = {})
+    @source = ActiveRecord.new(
+      model: Product,
+      scope: ->(r) { r.where(active: true) }
+    )
+    @sink = ActiveRecord.new(model: ProductExport)
+  end
+
+  def transform(data)
+    {
+      product_id: data['id'],
+      price_cents: (data['price'].to_f * 100).to_i,
+      category_slug: data['category']&.parameterize,
+      exported_at: Time.current
+    }
+  end
+end</code></pre>
+      </div>
+
+      <!-- Status Note -->
+      <div class="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-yellow-700">
+              <strong>Development Status:</strong> The ActiveDataflow gems are currently being implemented. 
+              The DataFlow code is ready but temporarily inactive until the core framework is complete.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="text-center">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
+      <div class="flex flex-wrap justify-center gap-4">
+        <%= link_to products_path, class: "bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition inline-flex items-center" do %>
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+          </svg>
+          View Products
+        <% end %>
+        <%= link_to product_exports_path, class: "bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition inline-flex items-center" do %>
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          View Exports
+        <% end %>
+        <%= link_to data_flow_path, class: "bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition inline-flex items-center" do %>
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          View DataFlow
+        <% end %>
+        <%= button_to heartbeat_path, method: :post, class: "bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition inline-flex items-center" do %>
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+          Trigger Heartbeat
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

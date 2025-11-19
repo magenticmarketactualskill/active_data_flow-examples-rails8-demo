@@ -14,7 +14,12 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Application routes
-  root "products#index"
+  root "home#index"
   resources :products
   resources :product_exports, only: [:index]
+  
+  # DataFlow routes
+  get "data_flow", to: "data_flows#show", as: :data_flow
+  post "heartbeat", to: "data_flows#heartbeat", as: :heartbeat
+  get "heartbeat", to: "data_flows#heartbeat"
 end

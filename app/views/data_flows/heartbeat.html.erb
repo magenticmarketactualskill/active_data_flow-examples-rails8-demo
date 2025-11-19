@@ -1,0 +1,164 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <%= link_to "← Back to Home", root_path, class: "text-blue-600 hover:text-blue-800" %>
+  </div>
+
+  <h1 class="text-4xl font-bold mb-8">DataFlow Heartbeat</h1>
+
+  <!-- Status Message -->
+  <% if @status == "success" %>
+    <div class="bg-green-50 border-l-4 border-green-500 p-6 mb-8">
+      <div class="flex items-center">
+        <svg class="w-8 h-8 text-green-500 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div>
+          <h2 class="text-xl font-bold text-green-900 mb-1">Success!</h2>
+          <p class="text-green-800"><%= @message %></p>
+          <% if @export_count %>
+            <p class="text-sm text-green-700 mt-2">Total exports: <%= @export_count %></p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% elsif @status == "error" %>
+    <div class="bg-red-50 border-l-4 border-red-500 p-6 mb-8">
+      <div class="flex items-center">
+        <svg class="w-8 h-8 text-red-500 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div>
+          <h2 class="text-xl font-bold text-red-900 mb-1">Error</h2>
+          <p class="text-red-800"><%= @message %></p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Development Status -->
+  <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 mb-8">
+    <div class="flex items-center">
+      <svg class="w-8 h-8 text-yellow-500 mr-4" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+      </svg>
+      <div>
+        <h2 class="text-lg font-bold text-yellow-900 mb-1">Development Status</h2>
+        <p class="text-yellow-800">
+          The ActiveDataflow gems are currently being implemented. DataFlow execution is temporarily disabled 
+          until the core framework is complete.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- What is Heartbeat? -->
+  <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+    <h2 class="text-2xl font-bold mb-4">What is the Heartbeat?</h2>
+    <p class="text-gray-700 mb-4">
+      The heartbeat is a trigger mechanism that executes all enabled DataFlows. In a production environment, 
+      this would typically be called:
+    </p>
+    <ul class="space-y-2 text-gray-700 mb-6">
+      <li class="flex items-start">
+        <span class="text-purple-600 mr-2">•</span>
+        <span><strong>Periodically:</strong> By a scheduler (cron, Kubernetes CronJob, etc.)</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-purple-600 mr-2">•</span>
+        <span><strong>On-demand:</strong> Via API call or manual trigger</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-purple-600 mr-2">•</span>
+        <span><strong>Event-driven:</strong> In response to data changes or external events</span>
+      </li>
+    </ul>
+
+    <div class="bg-gray-100 p-4 rounded-lg">
+      <h3 class="font-bold mb-2">Example API Call:</h3>
+      <code class="text-sm">curl -X POST http://localhost:3000/heartbeat</code>
+    </div>
+  </div>
+
+  <!-- How It Works -->
+  <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+    <h2 class="text-2xl font-bold mb-4">How It Works</h2>
+    <div class="space-y-4">
+      <div class="flex items-start">
+        <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+          <span class="text-purple-600 font-bold">1</span>
+        </div>
+        <div>
+          <h3 class="font-bold mb-1">Heartbeat Triggered</h3>
+          <p class="text-gray-700">The heartbeat endpoint receives a request</p>
+        </div>
+      </div>
+
+      <div class="flex items-start">
+        <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+          <span class="text-purple-600 font-bold">2</span>
+        </div>
+        <div>
+          <h3 class="font-bold mb-1">Find Enabled DataFlows</h3>
+          <p class="text-gray-700">System queries for all DataFlows with enabled = true</p>
+        </div>
+      </div>
+
+      <div class="flex items-start">
+        <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+          <span class="text-purple-600 font-bold">3</span>
+        </div>
+        <div>
+          <h3 class="font-bold mb-1">Execute DataFlows</h3>
+          <p class="text-gray-700">Each DataFlow's run method is called sequentially</p>
+        </div>
+      </div>
+
+      <div class="flex items-start">
+        <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+          <span class="text-purple-600 font-bold">4</span>
+        </div>
+        <div>
+          <h3 class="font-bold mb-1">Log Results</h3>
+          <p class="text-gray-700">Execution status, errors, and metrics are recorded</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Current DataFlows -->
+  <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+    <h2 class="text-2xl font-bold mb-4">Configured DataFlows</h2>
+    <div class="border rounded-lg overflow-hidden">
+      <table class="min-w-full">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Interval</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Class</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr>
+            <td class="px-6 py-4">Product Sync Flow</td>
+            <td class="px-6 py-4">
+              <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                Pending Implementation
+              </span>
+            </td>
+            <td class="px-6 py-4">60 seconds</td>
+            <td class="px-6 py-4"><code class="text-sm">ProductSyncFlow</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-wrap gap-4">
+    <%= link_to "View Products", products_path, class: "bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition" %>
+    <%= link_to "View Exports", product_exports_path, class: "bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition" %>
+    <%= link_to "View DataFlow Details", data_flow_path, class: "bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition" %>
+    <%= button_to "Trigger Again", heartbeat_path, method: :post, class: "bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition" %>
+  </div>
+</div>

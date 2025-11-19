@@ -1,0 +1,179 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <%= link_to "← Back to Home", root_path, class: "text-blue-600 hover:text-blue-800" %>
+  </div>
+
+  <h1 class="text-4xl font-bold mb-8">ProductSyncFlow DataFlow</h1>
+
+  <!-- Overview -->
+  <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+    <h2 class="text-2xl font-bold mb-4">Overview</h2>
+    <p class="text-gray-700 mb-4">
+      The ProductSyncFlow is an ActiveDataflow DataFlow that demonstrates data synchronization 
+      and transformation between two tables. It reads active products from the source table, 
+      transforms the data, and writes it to the export table.
+    </p>
+    
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+      <p class="text-blue-900">
+        <strong>Purpose:</strong> Sync active products to an export table with data transformations 
+        suitable for external systems or APIs.
+      </p>
+    </div>
+  </div>
+
+  <!-- Components -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h3 class="text-xl font-bold mb-3 text-blue-600">Source Connector</h3>
+      <p class="text-gray-700 mb-3">ActiveRecord Source</p>
+      <ul class="text-sm text-gray-600 space-y-2">
+        <li>• Model: Product</li>
+        <li>• Scope: active = true</li>
+        <li>• Reads all active products</li>
+      </ul>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h3 class="text-xl font-bold mb-3 text-purple-600">Transformation</h3>
+      <p class="text-gray-700 mb-3">Data Processing</p>
+      <ul class="text-sm text-gray-600 space-y-2">
+        <li>• Price → Price Cents</li>
+        <li>• Category → Slug</li>
+        <li>• Add Timestamp</li>
+      </ul>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h3 class="text-xl font-bold mb-3 text-green-600">Sink Connector</h3>
+      <p class="text-gray-700 mb-3">ActiveRecord Sink</p>
+      <ul class="text-sm text-gray-600 space-y-2">
+        <li>• Model: ProductExport</li>
+        <li>• Writes transformed data</li>
+        <li>• Creates new records</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Transformation Details -->
+  <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+    <h2 class="text-2xl font-bold mb-4">Transformation Logic</h2>
+    
+    <div class="space-y-6">
+      <div class="border-l-4 border-purple-500 pl-4">
+        <h3 class="font-bold text-lg mb-2">1. Price Conversion</h3>
+        <p class="text-gray-700 mb-2">Converts decimal price to integer cents for precise calculations.</p>
+        <div class="bg-gray-100 p-3 rounded">
+          <code class="text-sm">price_cents: (data['price'].to_f * 100).to_i</code>
+        </div>
+        <p class="text-sm text-gray-600 mt-2">Example: $29.99 → 2999 cents</p>
+      </div>
+
+      <div class="border-l-4 border-purple-500 pl-4">
+        <h3 class="font-bold text-lg mb-2">2. Category Slugification</h3>
+        <p class="text-gray-700 mb-2">Converts category names to URL-friendly slugs.</p>
+        <div class="bg-gray-100 p-3 rounded">
+          <code class="text-sm">category_slug: data['category']&.parameterize</code>
+        </div>
+        <p class="text-sm text-gray-600 mt-2">Example: "Home & Kitchen" → "home-kitchen"</p>
+      </div>
+
+      <div class="border-l-4 border-purple-500 pl-4">
+        <h3 class="font-bold text-lg mb-2">3. Timestamp Addition</h3>
+        <p class="text-gray-700 mb-2">Adds export timestamp to track when sync occurred.</p>
+        <div class="bg-gray-100 p-3 rounded">
+          <code class="text-sm">exported_at: Time.current</code>
+        </div>
+        <p class="text-sm text-gray-600 mt-2">Tracks synchronization time</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Code -->
+  <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+    <h2 class="text-2xl font-bold mb-4">Implementation Code</h2>
+    <div class="bg-gray-900 text-gray-100 rounded-lg p-6 overflow-x-auto">
+      <pre class="text-sm"><code># frozen_string_literal: true
+
+# ProductSyncFlow demonstrates ActiveDataflow functionality by syncing
+# active products to an export table with data transformation.
+class ProductSyncFlow < ActiveDataflow::DataFlow
+  def initialize(config = {})
+    super
+    @source = ActiveDataflow::Connector::Source::ActiveRecord.new(
+      model: Product,
+      scope: ->(relation) { relation.where(active: true) }
+    )
+    @sink = ActiveDataflow::Connector::Sink::ActiveRecord.new(
+      model: ProductExport
+    )
+  end
+
+  def run
+    @source.each do |message|
+      transformed = transform(message.data)
+      @sink.write(transformed)
+    end
+  rescue StandardError => e
+    Rails.logger.error("ProductSyncFlow error: #{e.message}")
+    raise
+  end
+
+  private
+
+  def transform(data)
+    {
+      product_id: data['id'],
+      name: data['name'],
+      sku: data['sku'],
+      price_cents: (data['price'].to_f * 100).to_i,
+      category_slug: data['category']&.parameterize,
+      exported_at: Time.current
+    }
+  end
+end</code></pre>
+    </div>
+  </div>
+
+  <!-- Error Handling -->
+  <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+    <h2 class="text-2xl font-bold mb-4">Error Handling</h2>
+    <p class="text-gray-700 mb-4">
+      The DataFlow includes comprehensive error handling:
+    </p>
+    <ul class="space-y-2 text-gray-700">
+      <li class="flex items-start">
+        <span class="text-red-600 mr-2">•</span>
+        <span>Catches and logs all errors during execution</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-red-600 mr-2">•</span>
+        <span>Provides detailed error messages in Rails logs</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-red-600 mr-2">•</span>
+        <span>Re-raises errors for proper handling by the runtime</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-red-600 mr-2">•</span>
+        <span>Prevents partial data corruption with transaction support</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Actions -->
+  <div class="bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-2xl font-bold mb-4">Actions</h2>
+    <div class="flex flex-wrap gap-4">
+      <%= link_to products_path, class: "bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition" do %>
+        View Source Products
+      <% end %>
+      <%= link_to product_exports_path, class: "bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition" do %>
+        View Exported Products
+      <% end %>
+      <%= link_to heartbeat_path, class: "bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition" do %>
+        Trigger DataFlow
+      <% end %>
+    </div>
+  </div>
+</div>

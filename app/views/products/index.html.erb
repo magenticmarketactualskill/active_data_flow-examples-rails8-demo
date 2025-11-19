@@ -1,10 +1,16 @@
 <div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <%= link_to "← Back to Home", root_path, class: "text-blue-600 hover:text-blue-800" %>
+  </div>
+
   <h1 class="text-3xl font-bold mb-6">Products</h1>
   
-  <div class="mb-4">
+  <div class="mb-4 flex flex-wrap gap-4">
     <%= link_to "View Product Exports", product_exports_path, class: "text-blue-600 hover:text-blue-800" %>
-    |
-    <%= link_to "DataFlows Dashboard", "/active_data_flow/data_flows", class: "text-blue-600 hover:text-blue-800" %>
+    <span class="text-gray-400">|</span>
+    <%= link_to "View DataFlow", data_flow_path, class: "text-blue-600 hover:text-blue-800" %>
+    <span class="text-gray-400">|</span>
+    <%= link_to "Trigger Heartbeat", heartbeat_path, method: :post, class: "text-blue-600 hover:text-blue-800" %>
   </div>
 
   <div class="bg-white shadow-md rounded-lg overflow-hidden">
