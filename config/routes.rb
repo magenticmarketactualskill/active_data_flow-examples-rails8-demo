@@ -1,7 +1,14 @@
 Rails.application.routes.draw do
-  # Mount ActiveDataflow Rails engine
-  # TODO: Uncomment when ActiveDataflow gems are fully implemented
-  # mount ActiveDataFlow::RailsHeartbeatApp::Engine => "/active_data_flow"
+  # ActiveDataflow routes (provided by active_dataflow-runtime-heartbeat gem)
+  scope "/active_data_flow" do
+    namespace :active_data_flow do
+      namespace :runtime do
+        namespace :heartbeat do
+          post "/data_flows/heartbeat", to: "data_flows#heartbeat", as: :heartbeat
+        end
+      end
+    end
+  end
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
