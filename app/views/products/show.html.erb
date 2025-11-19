@@ -1,0 +1,32 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Product Details</h1>
+  
+  <div class="bg-white shadow-md rounded-lg p-6">
+    <dl class="grid grid-cols-1 gap-4">
+      <div>
+        <dt class="font-semibold text-gray-700">SKU:</dt>
+        <dd class="mt-1"><%= @product.sku %></dd>
+      </div>
+      <div>
+        <dt class="font-semibold text-gray-700">Name:</dt>
+        <dd class="mt-1"><%= @product.name %></dd>
+      </div>
+      <div>
+        <dt class="font-semibold text-gray-700">Price:</dt>
+        <dd class="mt-1">$<%= number_with_precision(@product.price, precision: 2) %></dd>
+      </div>
+      <div>
+        <dt class="font-semibold text-gray-700">Category:</dt>
+        <dd class="mt-1"><%= @product.category %></dd>
+      </div>
+      <div>
+        <dt class="font-semibold text-gray-700">Active:</dt>
+        <dd class="mt-1"><%= @product.active ? "Yes" : "No" %></dd>
+      </div>
+    </dl>
+    
+    <div class="mt-6">
+      <%= link_to "Back to Products", products_path, class: "text-blue-600 hover:text-blue-800" %>
+    </div>
+  </div>
+</div>

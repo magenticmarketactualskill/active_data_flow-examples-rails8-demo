@@ -1,0 +1,2 @@
+class ProductExport < ApplicationRecord
+end
