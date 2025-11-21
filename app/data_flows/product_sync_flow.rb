@@ -23,7 +23,7 @@ class ProductSyncFlow
 
   def run
     @source.each do |message|
-      transformed = transform(message.data)
+      transformed = transform(message)
       @sink.write(transformed)
     end
   rescue StandardError => e
