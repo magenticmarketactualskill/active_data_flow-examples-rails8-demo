@@ -28,6 +28,4 @@ Rails.application.routes.draw do
   
   # DataFlow routes
   get "data_flow", to: "data_flows#show", as: :data_flow
-  post "heartbeat", to: "data_flows#heartbeat", as: :heartbeat
-  get "heartbeat", to: "data_flows#heartbeat"
 end
