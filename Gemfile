@@ -45,9 +45,9 @@ gem "image_processing", "~> 1.2"
 gem "active_data_flow", path: "../../../", require: true
 #gem 'active_data_flow', git: 'https://github.com/magenticmarketactualskill/active_data_flow'
 
-gem "active_data_flow-connector-source-active_record", path: "../../../subgems", require: true
-gem "active_data_flow-connector-sink-active_record", path: "../../../subgems", require: true
-gem "active_data_flow-runtime-heartbeat", path: "../../../subgems", require: true
+gem "active_data_flow-connector-source-active_record", path: "../../active_data_flow-connector-source-active_record", require: true
+gem "active_data_flow-connector-sink-active_record", path: "../../active_data_flow-connector-sink-active_record", require: true
+gem "active_data_flow-runtime-heartbeat", path: "../../active_data_flow-runtime-heartbeat", require: true
 
 gem 'whenever', require: false
 
