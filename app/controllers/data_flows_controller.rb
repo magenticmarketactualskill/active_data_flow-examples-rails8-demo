@@ -13,30 +13,37 @@ class DataFlowsController < ApplicationController
 
   # POST /heartbeat
   # GET /heartbeat
-  # Triggers the ProductSyncFlow execution manually
+  # Triggers DataFlow execution manually via NextHeartbeat scheduler
+  # Uses DataFlowRun.pending.due scope to find runs ready for execution
   # Requirement 5: Manual DataFlow execution via HTTP
   def heartbeat
     begin
-      # Execute the ProductSyncFlow
       Rails.logger.info("/heartbeat called")
 
-      # SHOULD query DataFlows table
-      # for each DataFlow object call run
-
-      flow = ActiveProductSyncFlow.new
-      flow.run
+      # Use the NextHeartbeat scheduler which queries DataFlowRun.pending.due
+      result = ActiveDataFlow::Scheduler::NextHeartbeat.call
       
       @status = "success"
-      @message = "ProductSyncFlow called"
+      @message = "Processed #{result[:processed_runs]} run(s): #{result[:success_count]} success, #{result[:error_count]} errors"
       @export_count = ProductExport.count
       
       respond_to do |format|
         format.html { redirect_to product_exports_path, notice: @message }
-        format.json { render json: { status: @status, message: @message, export_count: @export_count }, status: :ok }
+        format.json { 
+          render json: { 
+            status: @status, 
+            message: @message, 
+            export_count: @export_count,
+            processed_runs: result[:processed_runs],
+            success_count: result[:success_count],
+            error_count: result[:error_count],
+            timestamp: result[:timestamp]
+          }, status: :ok 
+        }
       end
     rescue StandardError => e
       # Log the error with full details (Requirement 8.5)
-      Rails.logger.error("ProductSyncFlow execution failed: #{e.message}")
+      Rails.logger.error("DataFlow execution failed: #{e.message}")
       Rails.logger.error(e.backtrace.join("\n"))
       
       @status = "error"
