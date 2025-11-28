@@ -1,0 +1,1 @@
+../../../../../.kiro/steering/kiro_hierarchy.md
