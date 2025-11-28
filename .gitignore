@@ -34,6 +34,6 @@
 /config/*.key
 
 # Ignore data flow files (keep directory structure)
-/app/data_flows/*.rb
+
 !/app/data_flows/.keep
 

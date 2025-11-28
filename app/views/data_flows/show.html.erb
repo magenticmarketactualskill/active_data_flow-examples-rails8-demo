@@ -171,8 +171,8 @@ end</code></pre>
       <%= link_to product_exports_path, class: "bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition" do %>
         View Exported Products
       <% end %>
-      <%= link_to active_data_flow_runtime_heartbeat_heartbeat_path, class: "bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition", method: :post, data: { turbo_method: :post } do %>
-        Trigger DataFlow
+      <%= link_to active_data_flow_runtime_heartbeat_heartbeat_path(flow_name: "product_sync_flow"), class: "bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition", method: :post, data: { turbo_method: :post } do %>
+        Move 3 Products
       <% end %>
     </div>
   </div>
