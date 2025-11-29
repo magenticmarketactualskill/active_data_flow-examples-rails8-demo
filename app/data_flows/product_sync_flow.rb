@@ -49,6 +49,7 @@ class ProductSyncFlow < ActiveDataFlow::DataFlow
   # - Null categories (8.2)
   # - Zero prices (8.3)
   def transform(data)
+    Rails.logger.info "[DataFlowProductSyncFlow.transform] called"
     {
       product_id: data['id'],
       name: data['name'],

@@ -17,7 +17,7 @@ class DataFlowRunsController < ActiveDataFlow::Runtime::Heartbeat::DataFlowRunsC
   def heartbeat_click
     Rails.logger.info "[DataFlowsController.heartbeat_click] called"
     heartbeat_event
-    redirect_to root_path, notice: "DataFlow heartbeat triggered successfully"
+    redirect_to root_path, notice: "DataFlow heartbeat triggered"
   end
 
   # Triggers DataFlow execution (as managed by inherited runtime)
@@ -26,5 +26,6 @@ class DataFlowRunsController < ActiveDataFlow::Runtime::Heartbeat::DataFlowRunsC
   def heartbeat_event
     Rails.logger.info "[DataFlowsController.heartbeat_event] called"
     super
+    Rails.logger.info "[[DataFlowsController.heartbeat_event] executed"
   end
 end
