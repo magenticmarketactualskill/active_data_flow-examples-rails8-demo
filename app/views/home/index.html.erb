@@ -174,7 +174,7 @@ end</pre>
     </div>
 
     <div style="margin-top: 20px;">
-      <%= link_to "View Full DataFlow Details →", active_data_flow.data_flows_path, class: "btn btn-purple" %>
+      <%= link_to "View Full DataFlow Details →", active_data_flow_data_flows_path, class: "btn btn-purple" %>
     </div>
   </div>
 
@@ -183,7 +183,7 @@ end</pre>
     <h3 style="margin-bottom: 20px;">Quick Actions</h3>
     <%= link_to "📦 View Products", products_path, class: "btn btn-blue" %>
     <%= link_to "📄 View Exports", product_exports_path, class: "btn btn-green" %>
-    <%= link_to "⚡ View DataFlow", active_data_flow.data_flows_path, class: "btn btn-purple" %>
+    <%= link_to "⚡ View DataFlow", active_data_flow_data_flows_path, class: "btn btn-purple" %>
     <%= button_to "💓 Trigger Heartbeat", heartbeat_click_path, method: :get, class: "btn btn-orange" %>
   </div>
 </div>

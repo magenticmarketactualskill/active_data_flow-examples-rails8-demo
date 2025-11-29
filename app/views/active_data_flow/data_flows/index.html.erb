@@ -2,7 +2,7 @@
   <h1>Data Flows</h1>
 
   <div style="margin-bottom: 20px;">
-    <%= link_to "← Back to Home", root_path %>
+    <%= link_to "← Back to Home", main_app.root_path %>
   </div>
 
   <!-- Summary Cards -->
@@ -10,30 +10,30 @@
     <div style="background-color: #dbeafe; padding: 20px; border-radius: 8px;">
       <div style="font-size: 14px; color: #1e40af; font-weight: 600;">Products</div>
       <div style="font-size: 32px; font-weight: bold; color: #1e3a8a; margin-top: 8px;">
-        <%= Product.count %>
+        <%= defined?(Product) ? Product.count : 0 %>
       </div>
       <div style="font-size: 12px; color: #1e40af; margin-top: 4px;">
-        <%= Product.where(active: true).count %> active
+        <%= defined?(Product) ? Product.where(active: true).count : 0 %> active
       </div>
     </div>
 
     <div style="background-color: #d1fae5; padding: 20px; border-radius: 8px;">
       <div style="font-size: 14px; color: #065f46; font-weight: 600;">Product Exports</div>
       <div style="font-size: 32px; font-weight: bold; color: #064e3b; margin-top: 8px;">
-        <%= ProductExport.count %>
+        <%= defined?(ProductExport) ? ProductExport.count : 0 %>
       </div>
       <div style="font-size: 12px; color: #065f46; margin-top: 4px;">
-        <%= link_to "View all", "/product_exports", style: "color: #065f46;" %>
+        <%= link_to "View all", main_app.product_exports_path, style: "color: #065f46;" %>
       </div>
     </div>
 
     <div style="background-color: #fef3c7; padding: 20px; border-radius: 8px;">
       <div style="font-size: 14px; color: #92400e; font-weight: 600;">Data Flows</div>
       <div style="font-size: 32px; font-weight: bold; color: #78350f; margin-top: 8px;">
-        <%= @data_flows.count %>
+        <%= @data_flows&.count || 0 %>
       </div>
       <div style="font-size: 12px; color: #92400e; margin-top: 4px;">
-        <%= @data_flows.where(status: 'active').count %> active
+        <%= @data_flows&.where(status: 'active')&.count || 0 %> active
       </div>
     </div>
 
@@ -62,7 +62,7 @@
       </tr>
     </thead>
     <tbody>
-      <% @data_flows.each do |data_flow| %>
+      <% (@data_flows || []).each do |data_flow| %>
         <tr style="border-bottom: 1px solid #e5e7eb;">
           <td style="padding: 12px;">
             <%= link_to data_flow.name, "/active_data_flow/data_flows/#{data_flow.id}", style: "color: #3182ce; font-weight: 600;" %>
@@ -104,7 +104,7 @@
     </tbody>
   </table>
 
-  <% if @data_flows.empty? %>
+  <% if @data_flows.nil? || @data_flows.empty? %>
     <p style="text-align: center; color: #6b7280; margin-top: 40px;">No data flows found.</p>
   <% end %>
 </div>

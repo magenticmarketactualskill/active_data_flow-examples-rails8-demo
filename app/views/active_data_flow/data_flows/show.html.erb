@@ -45,6 +45,60 @@
     </div>
   </div>
 
+  <!-- Recent Runs Section -->
+  <% recent_runs = @data_flow.data_flow_runs.order(created_at: :desc).limit(5) %>
+  <% if recent_runs.any? %>
+    <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+      <h3 style="margin-top: 0; margin-bottom: 15px;">Recent Runs</h3>
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background-color: #e5e7eb; border-bottom: 2px solid #d1d5db;">
+            <th style="padding: 8px; text-align: left; font-size: 14px;">ID</th>
+            <th style="padding: 8px; text-align: left; font-size: 14px;">Status</th>
+            <th style="padding: 8px; text-align: left; font-size: 14px;">Run After</th>
+            <th style="padding: 8px; text-align: left; font-size: 14px;">Started</th>
+            <th style="padding: 8px; text-align: left; font-size: 14px;">Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recent_runs.each do |run| %>
+            <tr style="border-bottom: 1px solid #e5e7eb;">
+              <td style="padding: 8px; font-size: 14px;"><%= run.id %></td>
+              <td style="padding: 8px;">
+                <span style="padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; 
+                  <%= case run.status
+                      when 'success' then 'background-color: #d1fae5; color: #065f46;'
+                      when 'failed' then 'background-color: #fee2e2; color: #991b1b;'
+                      when 'in_progress' then 'background-color: #dbeafe; color: #1e40af;'
+                      when 'pending' then 'background-color: #fef3c7; color: #92400e;'
+                      else 'background-color: #f3f4f6; color: #374151;'
+                      end %>">
+                  <%= run.status.upcase %>
+                </span>
+              </td>
+              <td style="padding: 8px; font-size: 14px;">
+                <%= run.run_after.strftime('%m/%d %H:%M') %>
+              </td>
+              <td style="padding: 8px; font-size: 14px;">
+                <%= run.started_at ? run.started_at.strftime('%m/%d %H:%M') : '-' %>
+              </td>
+              <td style="padding: 8px; font-size: 14px;">
+                <% if run.started_at && run.ended_at %>
+                  <%= ((run.ended_at - run.started_at) * 1000).round %>ms
+                <% else %>
+                  -
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <div style="margin-top: 15px; text-align: right;">
+        <%= link_to "View All Runs →", "/active_data_flow/data_flows/#{@data_flow.id}/data_flow_runs", style: "color: #3182ce; font-weight: 600;" %>
+      </div>
+    </div>
+  <% end %>
+
   <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
     <h3>Source Configuration</h3>
     <pre style="background-color: #1f2937; color: #f9fafb; padding: 15px; border-radius: 4px; overflow-x: auto;"><%= JSON.pretty_generate(@data_flow.source) %></pre>

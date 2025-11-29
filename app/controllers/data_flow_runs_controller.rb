@@ -26,6 +26,6 @@ class DataFlowRunsController < ActiveDataFlow::Runtime::Heartbeat::DataFlowRunsC
   def heartbeat_event
     Rails.logger.info "[DataFlowsController.heartbeat_event] called"
     super
-    Rails.logger.info "[[DataFlowsController.heartbeat_event] executed"
+    Rails.logger.info "[DataFlowsController.heartbeat_event] executed"
   end
 end
