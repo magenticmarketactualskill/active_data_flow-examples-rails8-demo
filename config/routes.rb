@@ -35,10 +35,10 @@ Rails.application.routes.draw do
   # DataFlow routes
 
   # By user thru UI
-  get "data_flow", to: "data_flows#heartbeat_click", as: as: :heartbeat_click
+  get "data_flow", to: "data_flow_runs#heartbeat_click", as: :heartbeat_click
   #post "heartbeat", to: "data_flows#heartbeat", as: :heartbeat
   
   # By cron
-  get "data_flow", to: "data_flows#heartbeat_event", as: :data_flow_event
+  get "data_flow", to: "data_flow_runs#heartbeat_event", as: :data_flow_event
   #post "heartbeat", to: "data_flows#heartbeat", as: :heartbeat
 end

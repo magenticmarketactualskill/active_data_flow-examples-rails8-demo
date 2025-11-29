@@ -8,10 +8,10 @@ require 'active_data_flow'
 # - Reads from the products table (filtering active products)
 # - Transforms price to cents and category to slug
 # - Writes to the product_exports table
-class ProductSyncFlow
+class ProductSyncFlow < ActiveDataFlow::DataFlow
 
   # Added
-  attr_accessor :product_count, export_count, :last_export
+  attr_accessor :product_count, :export_count, :last_export
   
   def refresh
     @product_count = Product.active.count
@@ -21,39 +21,25 @@ class ProductSyncFlow
 
   # Generated
   def self.register
-    @source = ActiveDataFlow::Connector::Source::ActiveRecordSource.new(
+    source = ActiveDataFlow::Connector::Source::ActiveRecordSource.new(
       scope: Product.active,
       scope_params: [],
       batch_size: 3
     )
 
-    @sink = ActiveDataFlow::Connector::Sink::ActiveRecordSink.new(
+    sink = ActiveDataFlow::Connector::Sink::ActiveRecordSink.new(
         model_class: ProductExport
     )
     
-    @runtime = ActiveDataFlow::Runtime::Heartbeat.new(
+    runtime = ActiveDataFlow::Runtime::Heartbeat::Base.new(
     )
 
-    ActiveDataFlow::DataFlow.find_or_create(
+    find_or_create(
       name: "product_sync_flow",
       source: source,
       sink: sink,
       runtime: runtime
     )
-  end
-
-  def run
-    count = 0
-    @source.each do |message|
-      transformed = transform(message)
-      @sink.write(transformed)
-      count += 1
-      break if count >= @source.batch_size
-    end
-  rescue StandardError => e
-    Rails.logger.error("ProductSyncFlow error: #{e.message}")
-    Rails.logger.error(e.backtrace.join("\n"))
-    raise
   end
 
   private
