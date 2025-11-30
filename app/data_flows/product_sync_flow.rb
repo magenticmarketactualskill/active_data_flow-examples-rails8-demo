@@ -23,6 +23,7 @@ class ProductSyncFlow < ActiveDataFlow::DataFlow
   def self.register
     source = ActiveDataFlow::Connector::Source::ActiveRecordSource.new(
       scope: Product.active,
+      scope_name: :active,
       scope_params: [],
       batch_size: 3
     )
