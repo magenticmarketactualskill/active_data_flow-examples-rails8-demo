@@ -37,7 +37,7 @@ class DataFlowRunsController < ApplicationController
   def heartbeat_click
     Rails.logger.info "[DataFlowRunsController.heartbeat_click] called"
     trigger_active_data_flows
-    redirect_to main_app.root_path, notice: "DataFlow heartbeat triggered"
+    redirect_back fallback_location: main_app.root_path, notice: "DataFlow heartbeat triggered"
   end
 
   # GET /data_flow_event

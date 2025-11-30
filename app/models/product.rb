@@ -12,7 +12,7 @@ class Product < ApplicationRecord
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   # Scopes
-  scope :active, -> { where(active: true) }
+  scope :active, -> { where(active: true).sort(:id) }
   scope :inactive, -> { where(active: false) }
   scope :by_category, ->(category) { where(category: category) }
   scope :recent, -> { order(created_at: :desc) }

@@ -30,6 +30,7 @@ class ProductSyncFlow < ActiveDataFlow::DataFlow
 
     sink = ActiveDataFlow::Connector::Sink::ActiveRecordSink.new(
         model_class: ProductExport
+        message_id_calc: lambda { |message| mesaage.id }
     )
     
     runtime = ActiveDataFlow::Runtime::Heartbeat::Base.new(

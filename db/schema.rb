@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_27_020857) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_30_134513) do
   create_table "active_data_flow_data_flow_runs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "data_flow_id", null: false
     t.datetime "ended_at"
     t.text "error_backtrace"
     t.text "error_message"
+    t.integer "first_id"
+    t.integer "last_id"
     t.datetime "run_after", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "started_at"
     t.string "status", null: false
